@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GovPolicy Summarizer - Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a2e; /* Dark Grape */
+        }
+        .grape-gradient {
+            background: linear-gradient(135deg, #8E2DE2, #4A00E0);
+        }
+        .glass-card {
+            background: rgba(26, 26, 46, 0.6); /* Translucent dark grape */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-secondary {
+            background-color: rgba(74, 0, 224, 0.3);
+            border: 1px solid #4A00E0;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: rgba(74, 0, 224, 0.5);
+        }
+        /* Custom list style */
+        .custom-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+        .custom-list li::before {
+            content: '🍇';
+            position: absolute;
+            left: 0;
+            top: 2px;
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <div class="min-h-screen container mx-auto p-4 md:p-8">
+        <div class="text-center mb-10">
+            <a href="/" class="inline-block">
+                <h1 class="text-4xl font-bold grape-gradient text-transparent bg-clip-text">Insightful Policy Summaries</h1>
+            </a>
+            <p class="text-gray-400 mt-2">Drop policy acts & bills and get insightful summaries.</p>
+        </div>
+
+        <!-- Demonstration Section -->
+        <div class="glass-card rounded-2xl p-6 max-w-3xl mx-auto mb-10 text-sm">
+            <h2 class="font-bold text-lg text-purple-300 mb-2">How this works</h2>
+            <p class="text-gray-400 leading-relaxed">
+                Your document was divided into <strong class="text-purple-300">{{ total_chunks }}</strong> sections for easier analysis. For each section, we've generated two types of summaries:
+            </p>
+            <ul class="list-disc list-inside mt-3 text-gray-400 space-y-1">
+                <li><strong>Simplified Summary:</strong> An AI-generated paragraph that rephrases the main ideas in simple, easy-to-understand language.</li>
+                <li><strong>Key Sentences:</strong> The most important original sentences pulled directly from the document for a quick overview.</li>
+            </ul>
+        </div>
+
+        {% if error %}
+            <div class="glass-card rounded-2xl p-8 max-w-3xl mx-auto">
+                 <div class="bg-red-500/20 border border-red-500 text-red-300 px-4 py-3 rounded-lg" role="alert">
+                    <strong class="font-bold">An Error Occurred:</strong>
+                    <span class="block sm:inline">{{ error }}</span>
+                </div>
+            </div>
+        {% elif summaries %}
+            <div class="space-y-8">
+                {% for summary in summaries %}
+                <div class="glass-card rounded-2xl shadow-2xl overflow-hidden">
+                    <div class="p-6">
+                        <h2 class="text-2xl font-bold mb-6 grape-gradient text-transparent bg-clip-text">
+                            Analysis of Section {{ summary.chunk_num }}
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            <!-- Left Column: Simplified Summary -->
+                            <div>
+                                <h3 class="font-semibold text-lg text-purple-300 mb-3 border-b border-purple-800 pb-2">Simplified Summary</h3>
+                                <p class="text-gray-300 leading-relaxed">{{ summary.abstractive }}</p>
+                            </div>
+                            
+                            <!-- Right Column: Key Sentences -->
+                            <div>
+                                <h3 class="font-semibold text-lg text-purple-300 mb-3 border-b border-purple-800 pb-2">Key Sentences</h3>
+                                <ul class="text-gray-400 text-sm leading-relaxed custom-list">
+                                    {% for sentence in summary.extractive %}
+                                        <li>{{ sentence }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+             <div class="glass-card rounded-2xl p-8 max-w-3xl mx-auto text-center">
+                <p class="text-gray-300">No summaries were generated. The document might have been too short or an unexpected issue occurred.</p>
+            </div>
+        {% endif %}
+
+        <div class="text-center mt-12">
+            <a href="/" class="btn-secondary text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline">
+                Analyze Another Document
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
+
+

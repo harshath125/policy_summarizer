@@ -1,0 +1,7 @@
+Flask
+transformers
+torch
+PyMuPDF
+sumy
+sentencepiece
+gunicorn
